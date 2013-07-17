@@ -1,7 +1,12 @@
 phonegap-xapkreader
 ===================
 
-Cordova plugin to access files in APK Expansion Files
+Cordova plugin to access files in APK Expansion Files for Cordova/Phonegap Android application.
+
+# Requirements
+
+This suppose you have already implemented the expansion files donwloader service in your application.
+If not, please look at there : http://developer.android.com/google/play/expansion-files.html
 
 # Adding the Plugin to your project
 
@@ -12,15 +17,18 @@ Cordova plugin to access files in APK Expansion Files
 5. In your `res/wml/plugins.xml` file add the following line:
 ```xml
 <plugin name="XAPKReader" value="com.phonegap.plugins.xapkreader.XAPKReader"/>
-```
+```MIT
 6. Make sure you have the following permissions in your `AndroidManifest.xml` file to be abble to read the expansion files on shared storage:
 ```xml
+<!-- Required to read and write the expansion files on shared storage -->
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 ```
 
 # Using the plugin
 
 The plugin creates the object `window.plugins.barcodeScanner` with the method `get(filename, success, fail)`.
+
+The plugin returns the file encoded in Base64.
 
 A full example:
 ```javascript
@@ -33,7 +41,7 @@ window.plugins.xapkreader.get("monimage.png", function(data){
 });
 ```
 
-# Licence
+# Licence MIT
 
 Copyright 2013 Quentin Aupetit
 

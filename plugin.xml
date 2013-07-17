@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="com.phonegap.xapkreader"
+    version="1.0.0">
+
+    <engines>
+        <engine name="cordova" version=">=2.0.0" />
+    </engines>
+
+    <name>XAPKReader</name>
+
+    <description>Access files in APK Expansion Files</description>
+
+    <asset src="www/xapkreader.js" target="xapkreader.js" />
+
+    <license>MIT</license>
+
+    <platform name="android">
+
+        <config-file target="res/xml/config.xml" parent="plugins">
+            <plugin name="XAPKReader" value="com.phonegap.plugins.xapkreader.XAPKReader"/>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <!-- Required to read and write the expansion files on shared storage -->
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        </config-file>
+    
+        <!-- cordova plugin src files -->
+        <source-file src="src/XAPKReader.java" target-dir="src/com/phonegap/plugins/xapkreader" />
+
+        <!-- Downloader Library -->
+        <source-file src="src/android/Constants.java" target-dir="src/com/android/vending/expansion/downloader" />
+        <source-file src="src/android/DownloaderClientMarshaller.java" target-dir="src/com/android/vending/expansion/downloader" />
+        <source-file src="src/android/DownloaderServiceMarshaller.java" target-dir="src/com/android/vending/expansion/downloader" />
+        <source-file src="src/android/DownloadProgressInfo.java" target-dir="src/com/android/vending/expansion/downloader" />
+        <source-file src="src/android/Helpers.java" target-dir="src/com/android/vending/expansion/downloader" />
+        <source-file src="src/android/IDownloaderClient.java" target-dir="src/com/android/vending/expansion/downloader" />
+        <source-file src="src/android/IDownloaderService.java" target-dir="src/com/android/vending/expansion/downloader" />
+        <source-file src="src/android/IStub.java" target-dir="src/com/android/vending/expansion/downloader" />
+        <source-file src="src/android/SystemFacade.java" target-dir="src/com/android/vending/expansion/downloader" />
+        <source-file src="src/android/impl/AndroidHttpClient.java" target-dir="src/com/android/vending/expansion/downloader" />
+        <source-file src="src/android/impl/CustomIntentService.java" target-dir="src/com/android/vending/expansion/downloader" />
+        <source-file src="src/android/impl/CustomNotificationFactory.java" target-dir="src/com/android/vending/expansion/downloader" />
+        <source-file src="src/android/impl/DownloaderService.java" target-dir="src/com/android/vending/expansion/downloader" />
+        <source-file src="src/android/impl/DownloadInfo.java" target-dir="src/com/android/vending/expansion/downloader" />
+        <source-file src="src/android/impl/DownloadNotification.java" target-dir="src/com/android/vending/expansion/downloader" />
+        <source-file src="src/android/impl/DownloadsDB.java" target-dir="src/com/android/vending/expansion/downloader" />
+        <source-file src="src/android/impl/DownloadThread.java" target-dir="src/com/android/vending/expansion/downloader" />
+        <source-file src="src/android/impl/HttpDateTime.java" target-dir="src/com/android/vending/expansion/downloader" />
+        <source-file src="src/android/impl/V3CustomNotification.java" target-dir="src/com/android/vending/expansion/downloader" />
+        <source-file src="src/android/impl/V14CustomNotification.java" target-dir="src/com/android/vending/expansion/downloader" />
+        
+        <!-- APK Expansion Zip Library -->
+        <source-file src="src/android/APEZProvider.java" target-dir="src/com/android/vending/expansion/zipfile" />
+        <source-file src="src/android/APKExpansionSupport.java" target-dir="src/com/android/vending/expansion/zipfile" />
+        <source-file src="src/android/ZipResourceFile.java" target-dir="src/com/android/vending/expansion/zipfile" />
+
+    </platform>
+
+</plugin>
