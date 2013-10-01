@@ -8,6 +8,8 @@ Cordova plugin to access files in APK Expansion Files for Cordova/Phonegap Andro
 This suppose you have already implemented the expansion files donwloader service in your application.
 If not, please look at there : http://developer.android.com/google/play/expansion-files.html
 
+**Not tested with Cordova 3.x**
+
 # Adding the Plugin to your project
 
 1. In your project properties, add the *APK Expansion Zip Library* and *Downloader Library* to your project (You can find them in `<sdk>/extras/google/google_market_apk_expansion/` folder).
@@ -26,7 +28,7 @@ If not, please look at there : http://developer.android.com/google/play/expansio
 
 # Using the plugin
 
-The plugin creates the object `window.plugins.barcodeScanner` with the method `get(filename, success, fail)`.
+The plugin creates the object `window.plugins.xapkreader` with the method `get(filename, success, fail)`.
 
 The plugin returns the file encoded in Base64.
 
