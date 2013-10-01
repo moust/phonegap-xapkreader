@@ -16,7 +16,7 @@ If not, please look at there : http://developer.android.com/google/play/expansio
 2. Move `xapkreader.js` to your peoject's `www` folder and include a reference to it in yout html files.
 3. Creat a folder called `com.phonegap.plugins.xapkreader` within your project's `src` folder and copy `XAPKReader.java` into it.
 4. In the `XAPKReader.java` file, change the `mainVersion` and `patchVersion` variables to match with your APK Expansion File's version.
-5. In your `res/wml/plugins.xml` file add the following line:
+5. In your `res/xml/config.xml` file add the following line:
 ```xml
 <plugin name="XAPKReader" value="com.phonegap.plugins.xapkreader.XAPKReader"/>
 ```MIT
