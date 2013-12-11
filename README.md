@@ -12,18 +12,37 @@ If not, please look at there : http://developer.android.com/google/play/expansio
 
 # Adding the Plugin to your project
 
-1. In your project properties, add the *APK Expansion Zip Library* and *Downloader Library* to your project (You can find them in `<sdk>/extras/google/google_market_apk_expansion/` folder).
-2. Move `xapkreader.js` to your peoject's `www` folder and include a reference to it in yout html files.
-3. Creat a folder called `com.phonegap.plugins.xapkreader` within your project's `src` folder and copy `XAPKReader.java` into it.
-4. In the `XAPKReader.java` file, change the `mainVersion` and `patchVersion` variables to match with your APK Expansion File's version.
-5. In your `res/xml/config.xml` file add the following line:
-```xml
-<plugin name="XAPKReader" value="com.phonegap.plugins.xapkreader.XAPKReader"/>
-```MIT
-6. Make sure you have the following permissions in your `AndroidManifest.xml` file to be abble to read the expansion files on shared storage:
+## Manual Android Installation
+
+1. Copy the contens of `src/android/` to yoyr project's `src/` folder.
+
+2. Modify your `AndroidManifest.xml` and add the following lines to your manifest tag:
+
 ```xml
 <!-- Required to read and write the expansion files on shared storage -->
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+```
+
+3) Modify your `res/xml/config.xml` to include the following line as a child to the `widget` tag:
+
+```xml
+<feature name="XAPKReader">
+	<param name="android-package" value="com.phonegap.plugins.xapkreader.XAPKReader" />
+</feature>
+```
+
+4) Add the `xapkreader.js` script to your `assets/www` folder (or javascripts folder, wherever you want really) and reference it in your main `index.html` file. This file's usage is described in the Plugin API section below.
+
+## Automatic Installation
+
+This plugin is based on plugman. To install it to your app, simply execute plugman as follows:
+
+```
+plugman install --platform android --project [TARGET-PATH] --plugin [PLUGIN-PATH]
+
+where
+    [TARGET-PATH] = path to folder containing your phonegap project
+    [PLUGIN-PATH] = path to folder containing this plugin
 ```
 
 # Using the plugin
@@ -33,14 +52,19 @@ The plugin creates the object `window.plugins.xapkreader` with the method `get(f
 The plugin returns the file encoded in Base64.
 
 A full example:
+
 ```javascript
-window.plugins.xapkreader.get("monimage.png", function(data){
-	var img = new Image();
-	img.src = "data:image/png;base64," + data;
-	document.body.appendChild(img);
-}, function(error){
-	console.log("An error occurred: " + error);
-});
+window.plugins.XAPKReader.get(
+	"filename.png",
+	function (result) {
+		var img = new Image();
+		img.src = "data:image/png;base64," + data;
+		document.body.appendChild(img);
+	},
+	function (error) {
+		alert("An error occurred: " + error);
+	}
+);
 ```
 
 # Licence MIT
