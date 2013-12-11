@@ -29,8 +29,6 @@
 		
 		<!-- cordova plugin src files -->
 		<source-file src="src/android/XAPKReader.java" target-dir="src/com/phonegap/plugins/xapkreader" />
-		<source-file src="src/android/XAPKAlarmReceiver.java" target-dir="src/com/phonegap/plugins/xapkreader" />
-		<source-file src="src/android/XAPKDownloaderService.java" target-dir="src/com/phonegap/plugins/xapkreader" />
 
 		<config-file target="AndroidManifest.xml" parent="/manifest">
 			<!-- Required to access Google Play Licensing -->
