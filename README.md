@@ -8,8 +8,6 @@ Cordova plugin to access files in APK Expansion Files for Cordova/Phonegap Andro
 This suppose you have already implemented the expansion files donwloader service in your application.
 If not, please look at there : http://developer.android.com/google/play/expansion-files.html
 
-**Not tested with Cordova 3.x**
-
 # Adding the Plugin to your project
 
 ## Manual Android Installation
