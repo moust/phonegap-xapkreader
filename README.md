@@ -45,7 +45,7 @@ where
 
 # Using the plugin
 
-The plugin creates the object `window.plugins.xapkreader` with the method `get(filename, success, fail)`.
+The plugin creates the object `window.plugins.XAPKReader` with the method `get(filename, successCallback, errorCallback)`.
 
 The plugin returns the file encoded in Base64.
 
