@@ -1,85 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    id="com.phonegap.xapkreader"
-    version="1.0.0">
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	id="com.phonegap.plugins.xapkreader"
+	version="2.0.0">
 
-    <engines>
-        <engine name="cordova" version=">=2.0.0" />
-    </engines>
+	<name>XAPKReader</name>
 
-    <name>XAPKReader</name>
+	<description>Access files into APK Expansion Files</description>
 
-    <description>Access files in APK Expansion Files</description>
+	<license>MIT</license>
 
-    <asset src="www/xapkreader.js" target="xapkreader.js" />
+	<engines>
+		<engine name="cordova" version=">=3.0.0" />
+	</engines>
 
-    <license>MIT</license>
+	<js-module src="www/xapkreader.js" name="XAPKReader">
+		<clobbers target="XAPKReader" />
+	</js-module>
 
-    <platform name="android">
+	<!-- android -->
+	<platform name="android">
 
-        <config-file target="res/xml/config.xml" parent="plugins">
-            <plugin name="XAPKReader" value="com.phonegap.plugins.xapkreader.XAPKReader"/>
-        </config-file>
+		<config-file target="config.xml" parent="/*">
+			<feature name="XAPKReader">
+				<param name="android-package" value="com.phonegap.plugins.xapkreader.XAPKReader" />
+			</feature>
+		</config-file>
+		
+		<!-- cordova plugin src files -->
+		<source-file src="src/android/XAPKReader.java" target-dir="src/com/phonegap/plugins/xapkreader" />
+		<source-file src="src/android/ZipHelper.java" target-dir="src/com/phonegap/plugins/xapkreader" />
+		<source-file src="src/android/SampleAlarmReceiver.java" target-dir="src/com/phonegap/plugins/xapkreader" />
+		<source-file src="src/android/SampleDownloaderService.java" target-dir="src/com/phonegap/plugins/xapkreader" />
 
-        <config-file target="AndroidManifest.xml" parent="/manifest">
-            <!-- Required to read and write the expansion files on shared storage -->
-            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-        </config-file>
-    
-        <!-- cordova plugin src files -->
-        <source-file src="src/android/XAPKReader.java" target-dir="src/com/phonegap/plugins/xapkreader" />
+		<config-file target="AndroidManifest.xml" parent="/manifest">
+			<!-- Required to access Google Play Licensing -->
+			<uses-permission android:name="com.android.vending.CHECK_LICENSE" />
+			<!-- Required to download files from Google Play -->
+			<uses-permission android:name="android.permission.INTERNET" />
+			<!-- Required to keep CPU alive while downloading files (NOT to keep screen awake) -->
+			<uses-permission android:name="android.permission.WAKE_LOCK" />
+			<!-- Required to poll the state of the network connection and respond to changes -->
+			<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+			<!-- Required to check whether Wi-Fi is enabled -->
+			<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+			<!-- Required to read and write the expansion files on shared storage -->
+			<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+		</config-file>
 
-        <!-- Downloader Library -->
-        <source-file src="src/android/downloader/Constants.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/DownloaderClientMarshaller.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/DownloaderServiceMarshaller.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/DownloadProgressInfo.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/Helpers.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/IDownloaderClient.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/IDownloaderService.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/IStub.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/SystemFacade.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/AndroidHttpClient.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/CustomIntentService.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/CustomNotificationFactory.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/DownloaderService.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/DownloadInfo.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/DownloadNotification.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/DownloadsDB.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/DownloadThread.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/HttpDateTime.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/V3CustomNotification.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/V14CustomNotification.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        
-        <!-- APK Expansion Zip Library -->
-        <source-file src="src/android/zipfile/APEZProvider.java" 
-              target-dir="src/com/android/vending/expansion/zipfile" />
-        <source-file src="src/android/zipfile/APKExpansionSupport.java" 
-              target-dir="src/com/android/vending/expansion/zipfile" />
-        <source-file src="src/android/zipfile/ZipResourceFile.java" 
-              target-dir="src/com/android/vending/expansion/zipfile" />
+		<config-file target="AndroidManifest.xml" parent="/manifest/application">
+			<!--
+			 In order to start the service, it must be uniquely registered with
+			 the package manager here. 
+			-->
+			<service android:name="com.phonegap.plugins.xapkreader.SampleDownloaderService" />
+			<!--
+			 In order for the alarm manager to contact the downloader script, the receiver
+			 must be uniquely registered with the package manager here. 
+			-->
+			<receiver android:name="com.phonegap.plugins.xapkreader.SampleAlarmReceiver" />
+		</config-file>
 
-    </platform>
+		<info>
+			You need to install __Google Downloader Library__, __Expansion Zip Library__ and __Google Play Licensing Service__ from the `Android Extras` section using the Android SDK manager (run `android`).
+
+			You need to add the following line to your `local.properties`
+
+			android.library.reference.1=PATH_TO_ANDROID_SDK/sdk/extras/google/play_apk_expansion/downloader_library
+			android.library.reference.2=PATH_TO_ANDROID_SDK/sdk/extras/google/play_licensing/library
+			android.library.reference.3=PATH_TO_ANDROID_SDK/sdk/extras/google/play_apk_expansion/zip_file
+		</info>
+	
+	</platform>
 
 </plugin>

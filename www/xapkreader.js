@@ -1,27 +1,26 @@
-/**
- * cordova is available under *either* the terms of the modified BSD license *or* the
- * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
- *
- * Copyright (c) Quentin Aupetit 2013
- */
+cordova.define("cordova/plugins/xapkreader", function(require, exports, module) {
 
-cordova.define("cordova/plugins/xapkreader",
-function(require, exports, module) {
 	var exec = require("cordova/exec");
+	
 	var XAPKReader = function() {};
 
-	XAPKReader.prototype.get = function(filename, success, fail) {
-		if(!filename) { return false; }
-
-		if (!fail) { fail = function(){}; }
-
-		if (typeof fail != "function")  {
-			console.log("XAPKReader.get failure: failure parameter not a function");
+	XAPKReader.prototype.get = function(filename, successCallback, errorCallback) {
+		if (null === filename) {
+			console.log("XAPKReader.get failure: filename parameter needed");
 			return;
 		}
 
-		if (typeof success != "function") {
-			fail("success callback parameter must be a function");
+		if (null === errorCallback) {
+			errorCallback = function () {};
+		}
+
+		if (typeof errorCallback != "function") {
+			console.log("XAPKReader.get failure: error callback parameter not a function");
+			return;
+		}
+
+		if (typeof successCallback != "function") {
+			console.log("XAPKReader.get failure: success callback parameter must be a function");
 			return;
 		}
 
