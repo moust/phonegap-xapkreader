@@ -28,14 +28,14 @@ import android.content.pm.PackageManager.NameNotFoundException;
  * from the alarm service using the provided service helper function within the
  * DownloaderClientMarshaller. This class must be then registered in your AndroidManifest.xml
  * file with a section like this:
- *         <receiver android:name=".SampleAlarmReceiver"/>
+ *         <receiver android:name=".XAPKAlarmReceiver"/>
  */
-public class SampleAlarmReceiver extends BroadcastReceiver {
+public class XAPKAlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
         try {
-            DownloaderClientMarshaller.startDownloadServiceIfRequired(context, intent, SampleDownloaderService.class);
+            DownloaderClientMarshaller.startDownloadServiceIfRequired(context, intent, XAPKDownloaderService.class);
         } catch (NameNotFoundException e) {
             e.printStackTrace();
         }       

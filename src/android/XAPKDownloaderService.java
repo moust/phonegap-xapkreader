@@ -22,7 +22,7 @@ import com.google.android.vending.expansion.downloader.impl.DownloaderService;
  * This class demonstrates the minimal client implementation of the
  * DownloaderService from the Downloader library.
  */
-public class SampleDownloaderService extends DownloaderService {
+public class XAPKDownloaderService extends DownloaderService {
     // stuff for LVL -- MODIFY FOR YOUR APPLICATION!
     private static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQRoibznbGcr9losyXM1d0oMl1D3G5g1SWJxFxoKL4aopCq1s1LGm02lVk2SjAbpohViswPuYr6t9+xtPkGkx6ZKLslUInB+G61QvOmQfFEZG3pyJ9rlWYiwpEHaFpRfCVN1djKXekn66mCnrDYcKA8+kZaVzyai93KrrZefhzTfT2OPiYRTR9np6EvqS4WB75KAwH4ms3M/O5hqMf0ss7bwmOrgCGPM5vh4iYo7G9OwiWH5y7HGgtgAr9h9QTj8pwHADsZeKbN9QXoKFoDeKniSL931JCHrJBlOWTlXx5Rbw8UDoZIYukVUoCqZQuUgs98tKKuO2fDVk5e39Fl7mwIDAQAB";
     // used by the preference obfuscater
@@ -57,7 +57,7 @@ public class SampleDownloaderService extends DownloaderService {
      */
     @Override
     public String getAlarmReceiverClassName() {
-        return SampleAlarmReceiver.class.getName();
+        return XAPKAlarmReceiver.class.getName();
     }
 
 }
