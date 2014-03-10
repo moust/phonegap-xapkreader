@@ -31,22 +31,22 @@ public class XAPKReader extends CordovaPlugin {
 	private static final String LOG_TAG = "XAPKReader";
 
 	/**
-     * Executes the request.
-     *
-     * This method is called from the WebView thread. To do a non-trivial amount of work, use:
-     *     cordova.getThreadPool().execute(runnable);
-     *
-     * To run on the UI thread, use:
-     *     cordova.getActivity().runOnUiThread(runnable);
-     *
-     * @param action          The action to execute.
-     * @param args            The exec() arguments.
-     * @param callbackContext The callback context used when calling back into JavaScript.
-     * @return                Whether the action was valid.
+	 * Executes the request.
+	 *
+	 * This method is called from the WebView thread. To do a non-trivial amount of work, use:
+	 *     cordova.getThreadPool().execute(runnable);
+	 *
+	 * To run on the UI thread, use:
+	 *     cordova.getActivity().runOnUiThread(runnable);
+	 *
+	 * @param action          The action to execute.
+	 * @param args            The exec() arguments.
+	 * @param callbackContext The callback context used when calling back into JavaScript.
+	 * @return                Whether the action was valid.
 	 * @throws JSONException 
-     *
-     * @sa https://github.com/apache/cordova-android/blob/master/framework/src/org/apache/cordova/CordovaPlugin.java
-     */
+	 *
+	 * @sa https://github.com/apache/cordova-android/blob/master/framework/src/org/apache/cordova/CordovaPlugin.java
+	 */
 	@Override
 	public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
 		if (action.equals(GET)) {
@@ -86,12 +86,12 @@ public class XAPKReader extends CordovaPlugin {
 	}
 
 	/**
-     * Read file in APK Expansion file.
-     *
-     * @param ctx      The context of the main Activity.
-     * @param filename The filename to read
-     * @return         Byte array of data
-     */
+	 * Read file in APK Expansion file.
+	 *
+	 * @param ctx      The context of the main Activity.
+	 * @param filename The filename to read
+	 * @return         Byte array of data
+	 */
 	private static byte[] readFile(Context ctx, String filename) throws IOException {
 		// Get APKExpensionFile
 		ZipResourceFile expansionFile = APKExpansionSupport.getAPKExpansionZipFile(ctx, XAPKReader.mainVersion, XAPKReader.patchVersion);

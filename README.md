@@ -12,7 +12,7 @@ If not, please look at there : http://developer.android.com/google/play/expansio
 
 ## Manual Android Installation
 
-1. Copy the contens of `src/android/` to yoyr project's `src/` folder.
+1. Copy the contens of `src/android/` to your project's `src/` folder.
 
 2. Modify your `AndroidManifest.xml` and add the following lines to your manifest tag:
 
