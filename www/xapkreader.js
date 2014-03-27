@@ -1,7 +1,7 @@
 cordova.define("cordova/plugins/xapkreader", function(require, exports, module) {
 
 	var exec = require("cordova/exec");
-	
+
 	var XAPKReader = function() {};
 
 	XAPKReader.prototype.get = function(filename, successCallback, errorCallback) {
@@ -15,7 +15,7 @@ cordova.define("cordova/plugins/xapkreader", function(require, exports, module) 
 		}
 
 		if (typeof errorCallback != "function") {
-			console.log("XAPKReader.get failure: error callback parameter not a function");
+			console.log("XAPKReader.get failure: error callback parameter must be a function");
 			return;
 		}
 
@@ -24,7 +24,7 @@ cordova.define("cordova/plugins/xapkreader", function(require, exports, module) 
 			return;
 		}
 
-		return cordova.exec(success, fail, "XAPKReader", "get", [filename]);
+		return cordova.exec(successCallback, errorCallback, "XAPKReader", "get", [filename]);
 	};
 
 	module.exports = new XAPKReader();
