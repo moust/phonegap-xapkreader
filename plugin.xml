@@ -1,40 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" 
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	id="com.phonegap.plugins.xapkreader"
+	id="org.apache.cordova.xapkreader"
 	version="2.0.0">
 
 	<name>XAPKReader</name>
-
 	<description>Access files into APK Expansion Files</description>
-
-	<license>MIT</license>
-
-	<engines>
-		<engine name="cordova" version=">=3.0.0" />
-	</engines>
+	<license>Apache 2.0</license>
+    <keywords>cordova,xapk</keywords>
 
 	<js-module src="www/xapkreader.js" name="XAPKReader">
 		<clobbers target="XAPKReader" />
 	</js-module>
 
-	<!-- android -->
-	<platform name="android">
+    <platform name="android">
 
-		<config-file target="config.xml" parent="/*">
-			<feature name="XAPKReader">
-				<param name="android-package" value="com.phonegap.plugins.xapkreader.XAPKReader" />
-			</feature>
-		</config-file>
-		
-		<!-- cordova plugin src files -->
-		<source-file src="src/android/XAPKReader.java" target-dir="src/com/phonegap/plugins/xapkreader" />
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="XAPKReader">
+                <param name="android-package" value="org.apache.cordova.xapkreader.XAPKReader"/>
+            </feature>
+        </config-file>
 
-		<config-file target="AndroidManifest.xml" parent="/manifest">
-			<!-- Required to read and write the expansion files on shared storage -->
-			<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-		</config-file>
-	
-	</platform>
+        <source-file src="src/android/XAPKReader.java" target-dir="src/org/apache/cordova/xapkreader" />
+
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <!-- Required to read and write the expansion files on shared storage -->
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="application">
+            <!--
+             In order to start the service, it must be uniquely registered with
+             the package manager here.
+            -->
+            <service android:name=".XAPKDownloaderService" />
+
+            <!--
+             In order for the alarm manager to contact the downloader script, the receiver
+             must be uniquely registered with the package manager here.
+            -->
+            <receiver android:name=".XAPKAlarmReceiver" />
+        </config-file>
+
+        <source-file src="src/android/XAPKDownloaderService.java" target-dir="src/org/apache/cordova/xapkreader" />
+        <source-file src="src/android/XAPKAlarmReceiver.java" target-dir="src/org/apache/cordova/xapkreader" />
+
+        <info>
+        You need to edit `src/org/apache/cordova/xapkreader/XAPKDownloaderService.java` to put your own application public key.
+
+        You need to install __APK Expansion Zip Library__ from the `Android Extras` section using the Android SDK manager (run `android`).
+
+        You need to install __Application Licensing__ from the `Android Extras` section using the Android SDK manager (run `android`).
+
+        You need to install __Downloader Library__ from the `Android Extras` section using the Android SDK manager (run `android`).
+        </info>
+
+    </platform>
 
 </plugin>

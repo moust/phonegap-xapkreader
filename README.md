@@ -54,7 +54,7 @@ A full example:
 ```javascript
 window.plugins.XAPKReader.get(
 	"filename.png",
-	function (result) {
+	function (data) {
 		var img = new Image();
 		img.src = "data:image/png;base64," + data;
 		document.body.appendChild(img);
