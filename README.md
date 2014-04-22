@@ -13,17 +13,17 @@ This plugin use the Cordova CLI's plugin command. To install it to your applicat
 cordova plugin add org.apache.cordova.xapkreader --variable MAIN_VERSION=1 --variable PATCH_VERSION=1 --variable FILE_SIZE=1095520
 ```
 
-`MAIN_VERSION` :  Can be `1` or `0`. Define if your APK expansion file is the main file or a patch.
-`PATCH_VERSION` :  The version of your expansion file.
-`FILE_SIZE` : The byte size of your expansion file. This is used to verify the intégrity of the file after downloading.
+- `MAIN_VERSION` :  Can be `1` or `0`. Define if your APK expansion file is the main file or a patch.
+- `PATCH_VERSION` :  The version of your expansion file.
+- `FILE_SIZE` : The byte size of your expansion file. This is used to verify the intégrity of the file after downloading.
 
 After installation you need to edit `src/org/apache/cordova/xapkreader/XAPKDownloaderService.java` to put your own application public key.
 
 Further, you need to add the your application the __Downloader Library__ and __APK Expansion Zip Library__ from the `Android Extras` section using the Android SDK manager (run `android`).
 
 This libraries are respectively located in :
-APK Expansion Zip Library : `<sdk>/extras/google/google_market_apk_expansion/zip_file/`
-Downloader Library : `<sdk>/extras/google/market_apk_expansion/downloader_library/`
+- APK Expansion Zip Library : `<sdk>/extras/google/google_market_apk_expansion/zip_file/`
+- Downloader Library : `<sdk>/extras/google/market_apk_expansion/downloader_library/`
 
 Note that the Downloader Library require the __Google Play Licensing Library__ located in `<sdk>/extras/google/market_licensing/`.
 
