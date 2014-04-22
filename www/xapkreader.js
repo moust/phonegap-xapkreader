@@ -3,21 +3,7 @@ var exec = require("cordova/exec");
 /**
  * Constructor
  **/
-var XAPKReader = function() {
-    this.mainVersion = 1;
-    this.patchVersion = 1;
-};
-
-/**
- * Initialize XAPKReader with the expansion file configuration
- *
- * @param mainVersion        The main version of the expansion file
- * @param patchVersion       The patch version of the expansion file
- */
-XAPKReader.prototype.initialize = function(mainVersion, patchVersion) {
-    this.mainVersion = mainVersion;
-    this.patchVersion = patchVersion;
-};
+var XAPKReader = function() {};
 
 /**
  * Get a file in expansion file and return it as data base64 encoded
@@ -29,11 +15,17 @@ XAPKReader.prototype.initialize = function(mainVersion, patchVersion) {
  *                                  errorCallback(int errorCode) - OPTIONAL
  **/
 XAPKReader.prototype.get = function(filename, successCallback, errorCallback) {
+    // only for android
+    if (!navigator.userAgent.match(/Android/i)) {
+        return successCallback(filename);
+    }
+
     if (null === filename) {
         console.error("XAPKReader.get failure: filename parameter needed");
         return;
     }
-    cordova.exec(successCallback, errorCallback, "XAPKReader", "get", [filename, this.mainVersion, this.patchVersion]);
+
+    cordova.exec(successCallback, errorCallback, "XAPKReader", "get", [filename]);
 };
 
 module.exports = new XAPKReader();

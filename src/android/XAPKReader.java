@@ -1,7 +1,9 @@
 package org.apache.cordova.xapkreader;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
+import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 
@@ -12,17 +14,52 @@ import com.google.android.vending.expansion.downloader.Helpers;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 
+import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
-// import org.apache.cordova.PluginResult;
-
+import org.apache.cordova.CordovaWebView;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 public class XAPKReader extends CordovaPlugin {
 
     private static final String LOG_TAG = "XAPKReader";
+
+    private int mainVersion = 1;
+
+    private int patchVersion = 1;
+
+    private long fileSize = 0L;
+
+    @Override
+    public void initialize(final CordovaInterface cordova, CordovaWebView webView) {
+
+        int mainVersionId = cordova.getActivity().getResources().getIdentifier("main_version", "integer", cordova.getActivity().getPackageName());
+        mainVersion = cordova.getActivity().getResources().getInteger(mainVersionId);
+
+        int patchVersionId = cordova.getActivity().getResources().getIdentifier("patch_version", "integer", cordova.getActivity().getPackageName());
+        patchVersion = cordova.getActivity().getResources().getInteger(patchVersionId);
+
+        int fileSizeId = cordova.getActivity().getResources().getIdentifier("file_size", "integer", cordova.getActivity().getPackageName());
+        fileSize = cordova.getActivity().getResources().getInteger(fileSizeId);
+
+        final Bundle bundle = new Bundle();
+        bundle.putInt("mainVersion", mainVersion);
+        bundle.putInt("patchVersion", patchVersion);
+        bundle.putLong("fileSize", fileSize);
+
+        cordova.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Context context = cordova.getActivity().getApplicationContext();
+                Intent intent = new Intent(context, XAPKDownloaderActivity.class);
+                intent.putExtras(bundle);
+                cordova.getActivity().startActivity(intent);
+            }
+        });
+
+        super.initialize(cordova, webView);
+    }
 
     /**
      * Executes the request.
@@ -45,8 +82,6 @@ public class XAPKReader extends CordovaPlugin {
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
         if (action.equals("get")) {
             final String filename = args.getString(0);
-            final int mainVersion = args.getInt(1);
-            final int patchVersion = args.getInt(2);
             final Context ctx = cordova.getActivity().getApplicationContext();
             cordova.getThreadPool().execute(new Runnable() {
                 public void run() {
