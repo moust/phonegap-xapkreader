@@ -3,65 +3,59 @@ phonegap-xapkreader
 
 Cordova plugin to access files in APK Expansion Files for Cordova/Phonegap Android application.
 
-# Requirements
+The plugin is an implementation of the process described here : [APK Expansion Files](http://developer.android.com/google/play/expansion-files.html)
 
-This suppose you have already implemented the expansion files donwloader service in your application.
-If not, please look at there : http://developer.android.com/google/play/expansion-files.html
+# Installation
 
-# Adding the Plugin to your project
-
-## Manual Android Installation
-
-1. Copy the contens of `src/android/` to your project's `src/` folder.
-
-2. Modify your `AndroidManifest.xml` and add the following lines to your manifest tag:
-
-```xml
-<!-- Required to read and write the expansion files on shared storage -->
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-```
-
-3) Modify your `res/xml/config.xml` to include the following line as a child to the `widget` tag:
-
-```xml
-<feature name="XAPKReader">
-	<param name="android-package" value="com.phonegap.plugins.xapkreader.XAPKReader" />
-</feature>
-```
-
-4) Add the `xapkreader.js` script to your `assets/www` folder (or javascripts folder, wherever you want really) and reference it in your main `index.html` file. This file's usage is described in the Plugin API section below.
-
-## Automatic Installation
-
-This plugin is based on plugman. To install it to your app, simply execute plugman as follows:
+This plugin use the Cordova CLI's plugin command. To install it to your application, simply execute the following (and replace variables).
 
 ```
-plugman install --platform android --project [TARGET-PATH] --plugin [PLUGIN-PATH]
-
-where
-    [TARGET-PATH] = path to folder containing your phonegap project
-    [PLUGIN-PATH] = path to folder containing this plugin
+cordova plugin add org.apache.cordova.xapkreader --variable MAIN_VERSION=1 --variable PATCH_VERSION=1 --variable FILE_SIZE=1095520
 ```
 
-# Using the plugin
+`MAIN_VERSION` :  Can be `1` or `0`. Define if your APK expansion file is the main file or a patch.
+`PATCH_VERSION` :  The version of your expansion file.
+`FILE_SIZE` : The byte size of your expansion file. This is used to verify the intégrity of the file after downloading.
 
-The plugin creates the object `window.plugins.XAPKReader` with the method `get(filename, successCallback, errorCallback)`.
+After installation you need to edit `src/org/apache/cordova/xapkreader/XAPKDownloaderService.java` to put your own application public key.
 
-The plugin returns the file encoded in Base64.
+Further, you need to add the your application the __Downloader Library__ and __APK Expansion Zip Library__ from the `Android Extras` section using the Android SDK manager (run `android`).
 
-A full example:
+This libraries are respectively located in :
+APK Expansion Zip Library : `<sdk>/extras/google/google_market_apk_expansion/zip_file/`
+Downloader Library : `<sdk>/extras/google/market_apk_expansion/downloader_library/`
+
+Note that the Downloader Library require the __Google Play Licensing Library__ located in `<sdk>/extras/google/market_licensing/`.
+
+You can find an explanation on how to do this in the following page : [Preparing to use the Downloader Library](http://developer.android.com/google/play/expansion-files.html#Preparing)
+
+# Using
+
+The file is returned to a success callback as a base64 encoded string that you can use like in the example below or with the File API.
+
+```
+XAPKReader.get(filename, successCallback, [errorCallback]);
+```
+
+## Parameters
+
+- **filename** : The name of the file to load form the expansion file
+- **successCallback** : The callback that executes when the file is loaded.
+- **errorCallback** (Optional) : The callback that executes if an error occurs.
+
+## Example
 
 ```javascript
-window.plugins.XAPKReader.get(
-	"filename.png",
-	function (data) {
-		var img = new Image();
-		img.src = "data:image/png;base64," + data;
-		document.body.appendChild(img);
-	},
-	function (error) {
-		alert("An error occurred: " + error);
-	}
+XAPKReader.get(
+    'image.jpg',
+    function (data) {
+        var img = new Image();
+        img.src = "data:image/png;base64," + data;
+        document.body.appendChild(img);
+    },
+    function (error) {
+        console.error(error);
+    }
 );
 ```
 
