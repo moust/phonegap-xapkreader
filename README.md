@@ -3,44 +3,60 @@ phonegap-xapkreader
 
 Cordova plugin to access files in APK Expansion Files for Cordova/Phonegap Android application.
 
-# Requirements
+The plugin is an implementation of the process described here : [APK Expansion Files](http://developer.android.com/google/play/expansion-files.html)
 
-This suppose you have already implemented the expansion files donwloader service in your application.
-If not, please look at there : http://developer.android.com/google/play/expansion-files.html
+# Installation
 
-**Not tested with Cordova 3.x**
+This plugin use the Cordova CLI's plugin command. To install it to your application, simply execute the following (and replace variables).
 
-# Adding the Plugin to your project
-
-1. In your project properties, add the *APK Expansion Zip Library* and *Downloader Library* to your project (You can find them in `<sdk>/extras/google/google_market_apk_expansion/` folder).
-2. Move `xapkreader.js` to your peoject's `www` folder and include a reference to it in yout html files.
-3. Creat a folder called `com.phonegap.plugins.xapkreader` within your project's `src` folder and copy `XAPKReader.java` into it.
-4. In the `XAPKReader.java` file, change the `mainVersion` and `patchVersion` variables to match with your APK Expansion File's version.
-5. In your `res/xml/config.xml` file add the following line:
-```xml
-<plugin name="XAPKReader" value="com.phonegap.plugins.xapkreader.XAPKReader"/>
-```MIT
-6. Make sure you have the following permissions in your `AndroidManifest.xml` file to be abble to read the expansion files on shared storage:
-```xml
-<!-- Required to read and write the expansion files on shared storage -->
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+```
+cordova plugin add org.apache.cordova.xapkreader --variable MAIN_VERSION=1 --variable PATCH_VERSION=1 --variable FILE_SIZE=1095520
 ```
 
-# Using the plugin
+`MAIN_VERSION` :  Can be `1` or `0`. Define if your APK expansion file is the main file or a patch.
+`PATCH_VERSION` :  The version of your expansion file.
+`FILE_SIZE` : The byte size of your expansion file. This is used to verify the intégrity of the file after downloading.
 
-The plugin creates the object `window.plugins.xapkreader` with the method `get(filename, success, fail)`.
+After installation you need to edit `src/org/apache/cordova/xapkreader/XAPKDownloaderService.java` to put your own application public key.
 
-The plugin returns the file encoded in Base64.
+Further, you need to add the your application the __Downloader Library__ and __APK Expansion Zip Library__ from the `Android Extras` section using the Android SDK manager (run `android`).
 
-A full example:
+This libraries are respectively located in :
+APK Expansion Zip Library : `<sdk>/extras/google/google_market_apk_expansion/zip_file/`
+Downloader Library : `<sdk>/extras/google/market_apk_expansion/downloader_library/`
+
+Note that the Downloader Library require the __Google Play Licensing Library__ located in `<sdk>/extras/google/market_licensing/`.
+
+You can find an explanation on how to do this in the following page : [Preparing to use the Downloader Library](http://developer.android.com/google/play/expansion-files.html#Preparing)
+
+# Using
+
+The file is returned to a success callback as a base64 encoded string that you can use like in the example below or with the File API.
+
+```
+XAPKReader.get(filename, successCallback, [errorCallback]);
+```
+
+## Parameters
+
+- **filename** : The name of the file to load form the expansion file
+- **successCallback** : The callback that executes when the file is loaded.
+- **errorCallback** (Optional) : The callback that executes if an error occurs.
+
+## Example
+
 ```javascript
-window.plugins.xapkreader.get("monimage.png", function(data){
-	var img = new Image();
-	img.src = "data:image/png;base64," + data;
-	document.body.appendChild(img);
-}, function(error){
-	console.log("An error occurred: " + error);
-});
+XAPKReader.get(
+    'image.jpg',
+    function (data) {
+        var img = new Image();
+        img.src = "data:image/png;base64," + data;
+        document.body.appendChild(img);
+    },
+    function (error) {
+        console.error(error);
+    }
+);
 ```
 
 # Licence MIT

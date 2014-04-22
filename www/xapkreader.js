@@ -1,41 +1,31 @@
+var exec = require("cordova/exec");
+
 /**
- * cordova is available under *either* the terms of the modified BSD license *or* the
- * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
+ * Constructor
+ **/
+var XAPKReader = function() {};
+
+/**
+ * Get a file in expansion file and return it as data base64 encoded
  *
- * Copyright (c) Quentin Aupetit 2013
- */
+ * @param filename              The file name
+ * @param successCallback       The callback to be called when the file is found.
+ *                                  successCallback()
+ * @param errorCallback         The callback to be called if there is an error.
+ *                                  errorCallback(int errorCode) - OPTIONAL
+ **/
+XAPKReader.prototype.get = function(filename, successCallback, errorCallback) {
+    // only for android
+    if (!navigator.userAgent.match(/Android/i)) {
+        return successCallback(filename);
+    }
 
-cordova.define("cordova/plugins/xapkreader",
-function(require, exports, module) {
-	var exec = require("cordova/exec");
-	var XAPKReader = function() {};
+    if (null === filename) {
+        console.error("XAPKReader.get failure: filename parameter needed");
+        return;
+    }
 
-	XAPKReader.prototype.get = function(filename, success, fail) {
-		if(!filename) { return false; }
+    cordova.exec(successCallback, errorCallback, "XAPKReader", "get", [filename]);
+};
 
-		if (!fail) { fail = function(){}; }
-
-		if (typeof fail != "function")  {
-			console.log("XAPKReader.get failure: failure parameter not a function");
-			return;
-		}
-
-		if (typeof success != "function") {
-			fail("success callback parameter must be a function");
-			return;
-		}
-
-		return cordova.exec(success, fail, "XAPKReader", "get", [filename]);
-	};
-
-	module.exports = new XAPKReader();
-
-});
-
-//-------------------------------------------------------------------
-if(!window.plugins) {
-	window.plugins = {};
-}
-if (!window.plugins.xapkreader) {
-	window.plugins.xapkreader = cordova.require("cordova/plugins/xapkreader");
-}
+module.exports = new XAPKReader();

@@ -1,23 +1,9 @@
-/**
- * cordova is available under *either* the terms of the modified BSD license *or* the
- * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
- *
- * Copyright (c) Quentin Aupetit 2013
- */
-
-package com.phonegap.plugins.xapkreader;
-
-import java.io.BufferedInputStream;
-import java.io.IOException;
-
-import org.apache.cordova.api.CallbackContext;
-import org.apache.cordova.api.CordovaPlugin;
-import org.apache.cordova.api.PluginResult;
-import org.json.JSONArray;
-import org.json.JSONException;
+package org.apache.cordova.xapkreader;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
+import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 
@@ -25,64 +11,138 @@ import com.android.vending.expansion.zipfile.APKExpansionSupport;
 import com.android.vending.expansion.zipfile.ZipResourceFile;
 import com.google.android.vending.expansion.downloader.Helpers;
 
-public class XAPKReader extends CordovaPlugin
-{
-	final static int mainVersion = 1;
-	final static int patchVersion = 1;
-	
-	@Override
-	public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
-		if (action.equals("get")) {
-			final String filename = args.getString(0);
-			try {
-        		Context ctx = cordova.getActivity().getApplicationContext();
-        		// Read file as array buffer
-        		byte[] data = XAPKReader.readFile(ctx, filename);
-	        	if (null != data) {
-	        		// Encode to Base64 string
-					String encoded = Base64.encodeToString(data, Base64.DEFAULT);
-					// Return file data as base64 string
-					callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, encoded));
-	        	}
-	        	else {
-	        		callbackContext.error("File not found.");
-	        	}
-        	}
-    		catch(Exception e) {
-    			e.printStackTrace();
-    			callbackContext.error(e.getMessage());
-    		}
-			return true;
-		}
-		return false;
-	}
-	
-	private static byte[] readFile(Context ctx, String filename) throws IOException {
-		// Get APKExpensionFile
-		ZipResourceFile expansionFile = APKExpansionSupport.getAPKExpansionZipFile(ctx, XAPKReader.mainVersion, XAPKReader.patchVersion);
-		
-		if (null == expansionFile) {
-			Log.e("XAPKReader", "APKExpansionFile not found.");
-			return null;
-    	}
-		
-		// Find file in ExpansionFile
-		String fileName = Helpers.getExpansionAPKFileName(ctx, true, XAPKReader.patchVersion);
-		fileName = fileName.substring(0, fileName.lastIndexOf("."));
-	    AssetFileDescriptor file = expansionFile.getAssetFileDescriptor(fileName + "/" + filename);
-		
-		if (null == file) {
-			Log.e("XAPKReader", "File not found (" + filename + ").");
-    		return null;
-    	}
-		
-		// Read file
-		int size = (int) file.getLength();
-	    byte[] data = new byte[size];
-		BufferedInputStream buf = new BufferedInputStream(file.createInputStream());
+import java.io.BufferedInputStream;
+import java.io.IOException;
+
+import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaWebView;
+import org.json.JSONArray;
+import org.json.JSONException;
+
+public class XAPKReader extends CordovaPlugin {
+
+    private static final String LOG_TAG = "XAPKReader";
+
+    private int mainVersion = 1;
+
+    private int patchVersion = 1;
+
+    private long fileSize = 0L;
+
+    @Override
+    public void initialize(final CordovaInterface cordova, CordovaWebView webView) {
+
+        int mainVersionId = cordova.getActivity().getResources().getIdentifier("main_version", "integer", cordova.getActivity().getPackageName());
+        mainVersion = cordova.getActivity().getResources().getInteger(mainVersionId);
+
+        int patchVersionId = cordova.getActivity().getResources().getIdentifier("patch_version", "integer", cordova.getActivity().getPackageName());
+        patchVersion = cordova.getActivity().getResources().getInteger(patchVersionId);
+
+        int fileSizeId = cordova.getActivity().getResources().getIdentifier("file_size", "integer", cordova.getActivity().getPackageName());
+        fileSize = cordova.getActivity().getResources().getInteger(fileSizeId);
+
+        final Bundle bundle = new Bundle();
+        bundle.putInt("mainVersion", mainVersion);
+        bundle.putInt("patchVersion", patchVersion);
+        bundle.putLong("fileSize", fileSize);
+
+        cordova.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Context context = cordova.getActivity().getApplicationContext();
+                Intent intent = new Intent(context, XAPKDownloaderActivity.class);
+                intent.putExtras(bundle);
+                cordova.getActivity().startActivity(intent);
+            }
+        });
+
+        super.initialize(cordova, webView);
+    }
+
+    /**
+     * Executes the request.
+     *
+     * This method is called from the WebView thread. To do a non-trivial amount of work, use:
+     *     cordova.getThreadPool().execute(runnable);
+     *
+     * To run on the UI thread, use:
+     *     cordova.getActivity().runOnUiThread(runnable);
+     *
+     * @param action          The action to execute.
+     * @param args            The exec() arguments.
+     * @param callbackContext The callback context used when calling back into JavaScript.
+     * @return                Whether the action was valid.
+     * @throws JSONException
+     *
+     * @sa https://github.com/apache/cordova-android/blob/master/framework/src/org/apache/cordova/CordovaPlugin.java
+     */
+    @Override
+    public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
+        if (action.equals("get")) {
+            final String filename = args.getString(0);
+            final Context ctx = cordova.getActivity().getApplicationContext();
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    try {
+                        // Read file as array buffer
+                        byte[] data = XAPKReader.readFile(ctx, filename, mainVersion, patchVersion);
+                        if (null != data) {
+                            // Encode to Base64 string
+                            String encoded = Base64.encodeToString(data, Base64.DEFAULT);
+                            // Return file data as base64 string
+                            callbackContext.success(encoded);
+                        }
+                        else {
+                            callbackContext.error("File not found.");
+                        }
+                    }
+                    catch(Exception e) {
+                        // e.printStackTrace();
+                        callbackContext.error(e.getMessage());
+                    }
+                }
+            });
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Read file in APK Expansion file.
+     *
+     * @param ctx      The context of the main Activity.
+     * @param filename The filename to read
+     * @return         Byte array of data
+     */
+    private static byte[] readFile(Context ctx, String filename, int mainVersion, int patchVersion) throws IOException {
+        // Get APKExpensionFile
+        ZipResourceFile expansionFile = APKExpansionSupport.getAPKExpansionZipFile(ctx, mainVersion, patchVersion);
+
+        if (null == expansionFile) {
+            Log.e(LOG_TAG, "APKExpansionFile not found.");
+            return null;
+        }
+
+        // Find file in ExpansionFile
+        String fileName = Helpers.getExpansionAPKFileName(ctx, true, patchVersion);
+        fileName = fileName.substring(0, fileName.lastIndexOf("."));
+        AssetFileDescriptor file = expansionFile.getAssetFileDescriptor(fileName + "/" + filename);
+
+        if (null == file) {
+            Log.e(LOG_TAG, "File not found (" + filename + ").");
+            return null;
+        }
+
+        // Read file
+        int size = (int) file.getLength();
+        byte[] data = new byte[size];
+        BufferedInputStream buf = new BufferedInputStream(file.createInputStream());
         buf.read(data, 0, data.length);
         buf.close();
-		
-		return data;
-	}
+
+        return data;
+    }
+
 }

@@ -1,84 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    id="com.phonegap.xapkreader"
-    version="1.0.0">
-
-    <engines>
-        <engine name="cordova" version=">=2.0.0" />
-    </engines>
+    id="org.apache.cordova.xapkreader"
+    version="2.0.0">
 
     <name>XAPKReader</name>
+    <description>Access files into APK Expansion Files</description>
+    <license>Apache 2.0</license>
+    <keywords>cordova,apk,expansion,file,xapk,xapkreader</keywords>
 
-    <description>Access files in APK Expansion Files</description>
+    <preference name="MAIN_VERSION" />
+    <preference name="PATCH_VERSION" />
+    <preference name="FILE_SIZE" />
 
-    <asset src="www/xapkreader.js" target="xapkreader.js" />
-
-    <license>MIT</license>
+    <js-module src="www/xapkreader.js" name="XAPKReader">
+        <clobbers target="XAPKReader" />
+    </js-module>
 
     <platform name="android">
 
-        <config-file target="res/xml/config.xml" parent="plugins">
-            <plugin name="XAPKReader" value="com.phonegap.plugins.xapkreader.XAPKReader"/>
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="XAPKReader">
+                <param name="android-package" value="org.apache.cordova.xapkreader.XAPKReader"/>
+                <param name="onload" value="true" />
+            </feature>
         </config-file>
+
+        <source-file src="src/android/res/values/xapkreader.xml" target-dir="res/values" />
+        <config-file target="res/values/xapkreader.xml" parent="/*">
+            <integer name="main_version">$MAIN_VERSION</integer>
+            <integer name="patch_version">$PATCH_VERSION</integer>
+            <integer name="file_size">$FILE_SIZE</integer>
+        </config-file>
+
+        <source-file src="src/android/XAPKReader.java" target-dir="src/org/apache/cordova/xapkreader" />
+        <source-file src="src/android/XAPKDownloaderActivity.java" target-dir="src/org/apache/cordova/xapkreader" />
+        <source-file src="src/android/XAPKDownloaderService.java" target-dir="src/org/apache/cordova/xapkreader" />
+        <source-file src="src/android/XAPKAlarmReceiver.java" target-dir="src/org/apache/cordova/xapkreader" />
 
         <config-file target="AndroidManifest.xml" parent="/manifest">
+            <!-- Required to download files from Google Play -->
+            <uses-permission android:name="android.permission.INTERNET" />
+            <!-- Required to keep CPU alive while downloading files (NOT to keep screen awake) -->
+            <uses-permission android:name="android.permission.WAKE_LOCK" />
+            <!-- Required to poll the state of the network connection and respond to changes -->
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <!-- Required to check whether Wi-Fi is enabled -->
+            <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
             <!-- Required to read and write the expansion files on shared storage -->
             <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+            <!-- Required to access Google Play Licensing -->
+            <uses-permission android:name="com.android.vending.CHECK_LICENSE" />
         </config-file>
-    
-        <!-- cordova plugin src files -->
-        <source-file src="src/android/XAPKReader.java" target-dir="src/com/phonegap/plugins/xapkreader" />
 
-        <!-- Downloader Library -->
-        <source-file src="src/android/downloader/Constants.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/DownloaderClientMarshaller.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/DownloaderServiceMarshaller.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/DownloadProgressInfo.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/Helpers.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/IDownloaderClient.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/IDownloaderService.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/IStub.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/SystemFacade.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/AndroidHttpClient.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/CustomIntentService.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/CustomNotificationFactory.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/DownloaderService.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/DownloadInfo.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/DownloadNotification.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/DownloadsDB.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/DownloadThread.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/HttpDateTime.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/V3CustomNotification.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        <source-file src="src/android/downloader/impl/V14CustomNotification.java" 
-              target-dir="src/com/google/android/vending/expansion/downloader" />
-        
-        <!-- APK Expansion Zip Library -->
-        <source-file src="src/android/zipfile/APEZProvider.java" 
-              target-dir="src/com/android/vending/expansion/zipfile" />
-        <source-file src="src/android/zipfile/APKExpansionSupport.java" 
-              target-dir="src/com/android/vending/expansion/zipfile" />
-        <source-file src="src/android/zipfile/ZipResourceFile.java" 
-              target-dir="src/com/android/vending/expansion/zipfile" />
+        <config-file target="AndroidManifest.xml" parent="application">
+            <activity android:name="org.apache.cordova.xapkreader.XAPKDownloaderActivity" android:label="@string/app_name" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale">
+                <intent-filter></intent-filter>
+            </activity>
+            <service android:name=".XAPKDownloaderService" />
+            <receiver android:name=".XAPKAlarmReceiver" />
+        </config-file>
+
+        <info>
+        You need to edit `src/org/apache/cordova/xapkreader/XAPKDownloaderService.java` to put your own application public key.
+
+        You need to add the your application the __Downloader Library__ and __APK Expansion Zip Library__ from the `Android Extras` section using the Android SDK manager (run `android`).
+        </info>
 
     </platform>
 
