@@ -31,10 +31,10 @@ You can find an explanation on how to do this in the following page : [Preparing
 
 # Using
 
-The file is returned to a success callback as a base64 encoded string that you can use like in the example below or with the File API.
+The file is returned to a success callback as URL object that you can use like in the example below or with the File API.
 
 ```
-XAPKReader.get(filename, successCallback, [errorCallback]);
+XAPKReader.get(filename, successCallback, [errorCallback], [fileType]);
 ```
 
 ## Parameters
@@ -42,20 +42,22 @@ XAPKReader.get(filename, successCallback, [errorCallback]);
 - **filename** : The name of the file to load form the expansion file
 - **successCallback** : The callback that executes when the file is loaded.
 - **errorCallback** (Optional) : The callback that executes if an error occurs.
+- **fileType** (Optional) : The file type.
 
 ## Example
 
 ```javascript
 XAPKReader.get(
     'image.jpg',
-    function (data) {
+    function (url) {
         var img = new Image();
-        img.src = "data:image/png;base64," + data;
+        img.src = url;
         document.body.appendChild(img);
     },
     function (error) {
         console.error(error);
-    }
+    },
+    'image/jpeg'
 );
 ```
 
