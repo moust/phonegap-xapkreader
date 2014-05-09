@@ -130,10 +130,8 @@ public class XAPKReader extends CordovaPlugin {
             return null;
         }
 
+        // Read file
         InputStream inputStream = fileDescriptor.createInputStream();
-        String contentType = URLConnection.guessContentTypeFromStream(inputStream);
-
-        // // Read file
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int read = 0;
@@ -141,6 +139,9 @@ public class XAPKReader extends CordovaPlugin {
             os.write(buffer, 0, read);
         }
         os.flush();
+
+        // get file content type
+        String contentType = URLConnection.guessContentTypeFromStream(inputStream);
 
         PluginResult result;
         switch (resultType) {
