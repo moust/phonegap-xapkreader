@@ -39,6 +39,12 @@ The file is returned to a success callback as URL object that you can use like i
 XAPKReader.get(filename, successCallback, [errorCallback], [fileType]);
 ```
 
+You may also access your files by using the content provider.
+
+```
+<img src="content://org.apache.cordova.xapkreader.expansion/image.jpg">
+```
+
 ## Parameters
 
 - **filename** : The name of the file to load form the expansion file
