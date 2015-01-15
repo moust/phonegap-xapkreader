@@ -117,7 +117,7 @@ public class XAPKReader extends CordovaPlugin {
 
         if (null == expansionFile) {
             Log.e(LOG_TAG, "APKExpansionFile not found.");
-            return null;
+            throw new IOException("APKExpansionFile not found.");
         }
 
         // Find file in ExpansionFile
@@ -125,7 +125,7 @@ public class XAPKReader extends CordovaPlugin {
 
         if (null == fileDescriptor) {
             Log.e(LOG_TAG, "File not found (" + filename + ").");
-            return null;
+            throw new IOException("File not found (" + filename + ").");
         }
 
         // Read file

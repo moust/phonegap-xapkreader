@@ -34,6 +34,7 @@
         </config-file>
 
         <source-file src="src/android/XAPKReader.java" target-dir="src/org/apache/cordova/xapkreader" />
+        <source-file src="src/android/XAPKProvider.java" target-dir="src/org/apache/cordova/xapkreader" />
         <source-file src="src/android/XAPKDownloaderActivity.java" target-dir="src/org/apache/cordova/xapkreader" />
         <source-file src="src/android/XAPKDownloaderService.java" target-dir="src/org/apache/cordova/xapkreader" />
         <source-file src="src/android/XAPKAlarmReceiver.java" target-dir="src/org/apache/cordova/xapkreader" />
@@ -59,6 +60,10 @@
             </activity>
             <service android:name=".XAPKDownloaderService" />
             <receiver android:name=".XAPKAlarmReceiver" />
+            <provider android:authorities="org.apache.cordova.xapkreader" android:exported="false" android:multiprocess="true" android:name="org.apache.cordova.xapkreader.XAPKProvider">
+                <meta-data android:name="mainVersion" android:value="$MAIN_VERSION" />
+                <meta-data android:name="patchVersion" android:value="$PATCH_VERSION" />
+            </provider>
         </config-file>
 
         <info>

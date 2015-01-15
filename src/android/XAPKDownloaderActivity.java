@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
@@ -40,10 +41,10 @@ public class XAPKDownloaderActivity extends Activity implements IDownloaderClien
      *
      * @return true if they are present.
      */
-    boolean expansionFilesDelivered(boolean mainVersion, int patchVersion, long fileSize) {
-        String fileName = Helpers.getExpansionAPKFileName(this, mainVersion, patchVersion);
+    boolean expansionFilesDelivered(boolean mainFile, int versionCode, long fileSize) {
+        String fileName = Helpers.getExpansionAPKFileName(this, mainFile, versionCode);
         if (!Helpers.doesFileExist(this, fileName, fileSize, false)) {
-            Log.e(LOG_TAG, "ExpansionAPKFile doesn't exist or has a wrong size (" + fileName + ").");
+            Log.i(LOG_TAG, "ExpansionAPKFile doesn't exist or has a wrong size (" + fileName + ").");
             return false;
         }
         return true;
@@ -54,12 +55,12 @@ public class XAPKDownloaderActivity extends Activity implements IDownloaderClien
     {
         super.onCreate(savedInstanceState);
 
-        boolean mainVersion = this.getIntent().getIntExtra("mainVersion", 1) > 0 ? true : false;
-        int patchVersion = this.getIntent().getIntExtra("patchVersion", 1);
+        boolean mainFile = this.getIntent().getIntExtra("mainVersion", 1) > 0 ? true : false;
+        int versionCode = this.getIntent().getIntExtra("patchVersion", 1);
         long fileSize = this.getIntent().getLongExtra("fileSize", 0L);
 
         // Check if expansion files are available before going any further
-        if (!expansionFilesDelivered(mainVersion, patchVersion, fileSize)) {
+        if (!expansionFilesDelivered(mainFile, versionCode, fileSize)) {
 
             try {
                 Intent launchIntent = this.getIntent();
@@ -110,7 +111,7 @@ public class XAPKDownloaderActivity extends Activity implements IDownloaderClien
 
         }
         else {
-            Log.v(LOG_TAG, "File is already present");
+            Log.i(LOG_TAG, "File is already present");
         }
 
         // finish activity
@@ -157,19 +158,15 @@ public class XAPKDownloaderActivity extends Activity implements IDownloaderClien
     }
 
     @Override
-    public void onDownloadProgress(DownloadProgressInfo progress) {
-        long percents = progress.mOverallProgress * 100 / progress.mOverallTotal;
-        Log.v(LOG_TAG, "DownloadProgress:"+Long.toString(percents) + "%");
-        mProgressDialog.setProgress((int) percents);
-    }
-
-    @Override
     public void onDownloadStateChanged(int newState) {
-        Log.v(LOG_TAG, "DownloadStateChanged : " + getString(Helpers.getDownloaderStringResourceIDFromState(newState)));
+        String state = getString(Helpers.getDownloaderStringResourceIDFromState(newState));
+        Log.v(LOG_TAG, "DownloadStateChanged : " + state);
+
+        mProgressDialog.setMessage(state);
 
         switch (newState) {
             case STATE_DOWNLOADING:
-                Log.v(LOG_TAG, "Downloading...");
+                Log.i(LOG_TAG, "Downloading...");
                 break;
             case STATE_COMPLETED: // The download was finished
                 // validateXAPKZipFiles();
@@ -184,10 +181,19 @@ public class XAPKDownloaderActivity extends Activity implements IDownloaderClien
             case STATE_FAILED_SDCARD_FULL:
             case STATE_FAILED_CANCELED:
             case STATE_FAILED:
+                // dismiss progress dialog
+                mProgressDialog.dismiss();
+                // show alert dialog
                 Builder alert = new AlertDialog.Builder(this);
                 alert.setTitle(getResources().getString(R.string.error));
-                alert.setMessage(getResources().getString(R.string.download_failed));
-                alert.setNeutralButton(getResources().getString(R.string.close), null);
+                alert.setMessage(state);
+                alert.setNeutralButton(getResources().getString(R.string.close), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        // finish activity
+                        finish();
+                    }
+                });
                 alert.show();
                 break;
         }
