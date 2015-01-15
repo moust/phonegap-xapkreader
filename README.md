@@ -61,7 +61,7 @@ XAPKReader.get(filename, successCallback, [errorCallback], [fileType]);
 You may also access your files by using the content provider.
 
 ```
-<img src="content://org.apache.cordova.xapkreader.expansion/image.jpg">
+<img src="content://org.apache.cordova.xapkreader/image.jpg">
 ```
 
 ## Parameters
