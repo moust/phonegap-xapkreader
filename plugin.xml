@@ -69,7 +69,7 @@
         <info>
         You need to edit `src/org/apache/cordova/xapkreader/XAPKDownloaderService.java` to put your own application public key.
 
-        You need to add the your application the __Downloader Library__ and __APK Expansion Zip Library__ from the `Android Extras` section using the Android SDK manager (run `android`).
+        You need to link your application to the __Downloader Library__ and __APK Expansion Zip Library__ from the `Android Extras` section using the Android SDK manager (run `android`).
         </info>
 
     </platform>
