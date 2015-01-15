@@ -58,8 +58,8 @@
             <activity android:name="org.apache.cordova.xapkreader.XAPKDownloaderActivity" android:label="@string/app_name" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale">
                 <intent-filter></intent-filter>
             </activity>
-            <service android:name=".XAPKDownloaderService" />
-            <receiver android:name=".XAPKAlarmReceiver" />
+            <service android:name="org.apache.cordova.xapkreader.XAPKDownloaderService" />
+            <receiver android:name="org.apache.cordova.xapkreader.XAPKAlarmReceiver" />
             <provider android:authorities="org.apache.cordova.xapkreader" android:exported="false" android:multiprocess="true" android:name="org.apache.cordova.xapkreader.XAPKProvider">
                 <meta-data android:name="mainVersion" android:value="$MAIN_VERSION" />
                 <meta-data android:name="patchVersion" android:value="$PATCH_VERSION" />
