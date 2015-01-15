@@ -158,6 +158,13 @@ public class XAPKDownloaderActivity extends Activity implements IDownloaderClien
     }
 
     @Override
+    public void onDownloadProgress(DownloadProgressInfo progress) {
+        long percents = progress.mOverallProgress * 100 / progress.mOverallTotal;
+        Log.v(LOG_TAG, "DownloadProgress:" + Long.toString(percents) + "%");
+        mProgressDialog.setProgress((int) percents);
+    }
+
+    @Override
     public void onDownloadStateChanged(int newState) {
         String state = getString(Helpers.getDownloaderStringResourceIDFromState(newState));
         Log.v(LOG_TAG, "DownloadStateChanged : " + state);
