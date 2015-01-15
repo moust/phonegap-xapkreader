@@ -5,6 +5,6 @@ import com.android.vending.expansion.zipfile.APEZProvider;
 public class XAPKProvider extends APEZProvider {
     @Override
     public String getAuthority() {
-        return "org.apache.cordova.xapkreader.expansion";
+        return "org.apache.cordova.xapkreader";
     }
 }

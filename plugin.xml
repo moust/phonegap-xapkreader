@@ -60,7 +60,7 @@
             </activity>
             <service android:name=".XAPKDownloaderService" />
             <receiver android:name=".XAPKAlarmReceiver" />
-            <provider android:authorities="org.apache.cordova.xapkreader.expansion" android:exported="false" android:multiprocess="true" android:name="org.apache.cordova.xapkreader.XAPKProvider">
+            <provider android:authorities="org.apache.cordova.xapkreader" android:exported="false" android:multiprocess="true" android:name="org.apache.cordova.xapkreader.XAPKProvider">
                 <meta-data android:name="mainVersion" android:value="$MAIN_VERSION" />
                 <meta-data android:name="patchVersion" android:value="$PATCH_VERSION" />
             </provider>
