@@ -29,8 +29,6 @@ Note that the Downloader Library require the __Google Play Licensing Library__ l
 
 You can find an explanation on how to do this in the following page : [Preparing to use the Downloader Library](http://developer.android.com/google/play/expansion-files.html#Preparing)
 
-Finally, you need to edit the import `import io.cordova.hellocordova.R;` in file `src/android/XAPKDownloaderActivity.java` to match with your own application's package name.
-
 # Using
 
 The file is returned to a success callback as URL object that you can use like in the example below or with the File API.
