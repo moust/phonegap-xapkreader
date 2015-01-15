@@ -17,17 +17,38 @@ cordova plugin add https://github.com/moust/phonegap-xapkreader.git --variable M
 - `PATCH_VERSION` : The patch version of your expansion file.
 - `FILE_SIZE` : The byte size of your expansion file. This is used to verify the intégrity of the file after downloading.
 
-After installation you need to edit `src/org/apache/cordova/xapkreader/XAPKDownloaderService.java` to put your own application public key.
+**After installation you need to edit `src/org/apache/cordova/xapkreader/XAPKDownloaderService.java` to put your own application public key.**
 
-Further, you need to add to your application the __Downloader Library__ and __APK Expansion Zip Library__ from the `Android Extras` section using the Android SDK manager (run `android`).
-
-This libraries are respectively located in :
-- APK Expansion Zip Library : `<sdk>/extras/google/play_apk_expansion/zip_file/`
-- Downloader Library : `<sdk>/extras/google/play_apk_expansion/downloader_library/`
-
-Note that the Downloader Library require the __Google Play Licensing Library__ located in `<sdk>/extras/google/play_licensing/`.
+Further, you need to add to your application the __Google Play Licensing Library__ and __Google Play APK Expansion Library__ from the *Android Extras* folder using the Android SDK manager (run `android sdk`).
 
 You can find an explanation on how to do this in the following page : [Preparing to use the Downloader Library](http://developer.android.com/google/play/expansion-files.html#Preparing)
+
+## How to referencing to the Licensing Library and APK Expansion Library
+
+1. Start the Android SDK Manager and install **Google Play Licensing Library** and **Google Play APK Expansion Library** in the *Extra* folder if it's not already the case.
+
+2. Create licensing project and build library
+```
+android update project --path [path/to/your/android/sdk]/extras/google/play_licensing/library --target 1
+cd [path/to/your/android/sdk]/extras/google/play_licensing/library
+ant release
+```
+
+3. Create apk expansion project and build library
+```
+android update project --path [path/to/your/android/sdk]/extras/google/play_apk_expansion/downloader_library --target 1
+cd [path/to/your/android/sdk]/extras/google/play_apk_expansion/downloader_library
+ant release
+```
+
+4. Update app project to use apk expansion library
+```
+android update project --path path/to/your/project \
+--library [path/to/your/android/sdk]/extras/google/play_apk_expansion/downloader_library \
+--library [path/to/your/android/sdk]/extras/google/play_apk_expansion/zip_file
+```
+
+5. Edit app `project.properties` and change the path in `android.library.reference.1` and `android.library.reference.2` to use relative path and not absolute as absolute paths fail to work
 
 # Using
 
@@ -40,7 +61,7 @@ XAPKReader.get(filename, successCallback, [errorCallback], [fileType]);
 You may also access your files by using the content provider.
 
 ```
-<img src="content://org.apache.cordova.xapkreader/image.jpg">
+<img src="content://org.apache.cordova.xapkreader.expansion/image.jpg">
 ```
 
 ## Parameters
