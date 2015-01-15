@@ -1,6 +1,5 @@
 package org.apache.cordova.xapkreader;
 
-import io.cordova.hellocordova.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -90,7 +89,8 @@ public class XAPKDownloaderActivity extends Activity implements IDownloaderClien
                     // Shows download progress
                     mProgressDialog = new ProgressDialog(XAPKDownloaderActivity.this);
                     mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                    mProgressDialog.setMessage(getResources().getString(R.string.downloading_assets));
+                    mProgressDialog.setTitle(getString(getResources().getIdentifier("please_wait", "string", getPackageName())));
+                    mProgressDialog.setMessage(getString(getResources().getIdentifier("downloading_assets", "string", getPackageName())));
                     mProgressDialog.setCancelable(false);
                     mProgressDialog.show();
                     return;
@@ -153,6 +153,7 @@ public class XAPKDownloaderActivity extends Activity implements IDownloaderClien
 
     @Override
     public void onServiceConnected(Messenger m) {
+        Log.i(LOG_TAG, "DownloadService connected");
         mRemoteService = DownloaderServiceMarshaller.CreateProxy(m);
         mRemoteService.onClientUpdated(mDownloaderClientStub.getMessenger());
     }
@@ -160,14 +161,15 @@ public class XAPKDownloaderActivity extends Activity implements IDownloaderClien
     @Override
     public void onDownloadProgress(DownloadProgressInfo progress) {
         long percents = progress.mOverallProgress * 100 / progress.mOverallTotal;
-        Log.v(LOG_TAG, "DownloadProgress:" + Long.toString(percents) + "%");
+        Log.i(LOG_TAG, "DownloadProgress:" + Long.toString(percents) + "%");
         mProgressDialog.setProgress((int) percents);
     }
 
     @Override
     public void onDownloadStateChanged(int newState) {
         String state = getString(Helpers.getDownloaderStringResourceIDFromState(newState));
-        Log.v(LOG_TAG, "DownloadStateChanged : " + state);
+        
+        Log.i(LOG_TAG, "DownloadStateChanged: " + state);
 
         mProgressDialog.setMessage(state);
 
@@ -177,7 +179,7 @@ public class XAPKDownloaderActivity extends Activity implements IDownloaderClien
                 break;
             case STATE_COMPLETED: // The download was finished
                 // validateXAPKZipFiles();
-                mProgressDialog.setMessage(getResources().getString(R.string.preparing_assets));
+                mProgressDialog.setMessage(getString(getResources().getIdentifier("preparing_assets", "string", getPackageName())));
                 // dismiss progress dialog
                 mProgressDialog.dismiss();
                 // finish activity
@@ -192,9 +194,9 @@ public class XAPKDownloaderActivity extends Activity implements IDownloaderClien
                 mProgressDialog.dismiss();
                 // show alert dialog
                 Builder alert = new AlertDialog.Builder(this);
-                alert.setTitle(getResources().getString(R.string.error));
+                alert.setTitle(getString(getResources().getIdentifier("error", "string", getPackageName())));
                 alert.setMessage(state);
-                alert.setNeutralButton(getResources().getString(R.string.close), new DialogInterface.OnClickListener() {
+                alert.setNeutralButton(getString(getResources().getIdentifier("close", "string", getPackageName())), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
                         // finish activity
