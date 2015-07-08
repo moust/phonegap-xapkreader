@@ -52,24 +52,19 @@ android update project --path path/to/your/project \
 
 # Using
 
-The file is returned to a success callback as URL object that you can use like in the example below or with the File API.
+You may access your files by using the org.apache.cordova.xapkreader content provider.
+
+```
+<img src="content://org.apache.cordova.xapkreader/image.jpg">
+```
+
+Or use the get method to access a file that is in your expansion pack.  The file is returned to a success callback as a URL object that you can use like in the example below or with the File API.
 
 ```
 XAPKReader.get(filename, successCallback, [errorCallback], [fileType]);
 ```
 
-The file is copied out of the expansion pack's zip file to the specified destination.
 
-```
-XAPKReader.export(filename, destination, successCallback, [errorCallback], [fileType]);
-```
-
-
-You may also access your files by using the content provider.
-
-```
-<img src="content://org.apache.cordova.xapkreader/image.jpg">
-```
 
 ## Parameters
 
@@ -94,6 +89,42 @@ XAPKReader.get(
     'image/jpeg'
 );
 ```
+
+
+
+
+Or use the export method to extract a file from the expansion pack and have it stored on your devide.  The file is copied out of the expansion pack's zip file to the specified destination.
+
+```
+XAPKReader.export(filename, destination, successCallback, [errorCallback], [fileType]);
+```
+
+
+## Parameters
+
+- **filename** : The name of the file to load form the expansion file
+- **destination** : The full path and file name of where the file should be copied to
+- **successCallback** : The callback that executes after the file is copied.
+- **errorCallback** (Optional) : The callback that executes if an error occurs.
+- **fileType** (Optional) : The file type.
+
+## Example
+
+```javascript
+var destination = '/data/data/com.example.myproject/tmp.m4a';
+XAPKReader.export(
+    'image.jpg',
+    destination,
+    function (url) {
+         playSound( destination );
+    },
+    function (error) {
+        console.error(error);
+    },
+    'audio/mp4'
+);
+```
+
 
 # Licence MIT
 
