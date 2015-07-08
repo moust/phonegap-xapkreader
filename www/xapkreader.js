@@ -38,6 +38,56 @@ module.exports = {
         cordova.exec(success, errorCallback, "XAPKReader", "get", [filename]);
     },
 
+
+
+
+    /**
+     * Export a file in expansion file by copying it to another location
+     *
+     * @param filename              The file name
+     * @param destination           File-path of target
+     * @param fileType              The file type (eg: "image/jpeg")
+     * @param successCallback       The callback to be called when the file is found.
+     *                                  successCallback()
+     * @param errorCallback         The callback to be called if there is an error.
+     *                                  errorCallback(int errorCode) - OPTIONAL
+     **/
+    export: function(filename, destination, successCallback, errorCallback, fileType) {
+        // only for android
+        if (!navigator.userAgent.match(/Android/i)) {
+            return successCallback(filename);
+        }
+
+        if (null === filename) {
+            console.error("XAPKReader.export failure: filename parameter needed");
+            return;
+        }
+
+        if (null === destination) {
+            console.error("XAPKReader.export failure: destination parameter needed");
+            return;
+        }
+
+        var context = this;
+
+        var success = function (result) {
+            try {
+                var url = context.arrayBufferToURL(result, fileType);
+                successCallback(url);
+            }
+            catch (e) {
+                errorCallback(e);
+            }
+        };
+
+        cordova.exec(success, errorCallback, "XAPKReader", "export", [filename, destination]);
+    },
+
+
+
+
+
+
     /**
      * Convert ArrayBuffer to URL
      *

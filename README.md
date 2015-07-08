@@ -55,8 +55,15 @@ android update project --path path/to/your/project \
 The file is returned to a success callback as URL object that you can use like in the example below or with the File API.
 
 ```
+XAPKReader.get(filename, destination, successCallback, [errorCallback], [fileType]);
+```
+
+The file is copied out of the expansion pack's zip file to the specified destination.
+
+```
 XAPKReader.get(filename, successCallback, [errorCallback], [fileType]);
 ```
+
 
 You may also access your files by using the content provider.
 
