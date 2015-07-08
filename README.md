@@ -113,7 +113,7 @@ XAPKReader.export(filename, destination, successCallback, [errorCallback], [file
 ```javascript
 var destination = '/data/data/com.example.myproject/tmp.m4a';
 XAPKReader.export(
-    'image.jpg',
+    'sound123.m4a',
     destination,
     function (url) {
          playSound( destination );
