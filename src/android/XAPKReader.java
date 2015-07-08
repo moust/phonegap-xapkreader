@@ -12,8 +12,10 @@ import com.android.vending.expansion.zipfile.ZipResourceFile;
 import com.google.android.vending.expansion.downloader.Helpers;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLConnection;
 
 import org.apache.cordova.CordovaInterface;
@@ -101,7 +103,64 @@ public class XAPKReader extends CordovaPlugin {
             });
             return true;
         }
+        if (action.equals("export")) {
+            final String filename = args.getString(0);
+            final String destination = args.getString(1);
+            final Context ctx = cordova.getActivity().getApplicationContext();
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    try {
+                        // Read file
+                        PluginResult result = XAPKReader.exportFile(ctx, filename, destination, mainVersion, patchVersion, PluginResult.MESSAGE_TYPE_ARRAYBUFFER);
+                        callbackContext.sendPluginResult(result);
+                    }
+                    catch(Exception e) {
+                        e.printStackTrace();
+                        callbackContext.error(e.getLocalizedMessage());
+                    }
+                }
+            });
+            return true;
+        }
         return false;
+    }
+
+    /**
+     * Export file in APK Expansion file.
+     *
+     * @param ctx      The context of the main Activity.
+     * @param filename The filename to read
+     * @return         PluginResult
+     */
+    private static PluginResult exportFile(Context ctx, String filename, String destination, int mainVersion, int patchVersion, final int resultType) throws IOException {
+        // Get APKExpensionFile
+        ZipResourceFile expansionFile = APKExpansionSupport.getAPKExpansionZipFile(ctx, mainVersion, patchVersion);
+
+        if (null == expansionFile) {
+            Log.e(LOG_TAG, "APKExpansionFile not found.");
+            throw new IOException("APKExpansionFile not found.");
+        }
+
+        // Find file in ExpansionFile
+        AssetFileDescriptor fileDescriptor = expansionFile.getAssetFileDescriptor(filename);
+
+        if (null == fileDescriptor) {
+            Log.e(LOG_TAG, "File not found (" + filename + ").");
+            throw new IOException("File not found (" + filename + ").");
+        }
+
+        // Copy file
+        InputStream inputStream = fileDescriptor.createInputStream();
+        FileOutputStream os = new FileOutputStream( destination );
+        byte[] buffer = new byte[1024];
+        int read = 0;
+        while ((read = inputStream.read(buffer, 0, buffer.length)) != -1) {
+            os.write(buffer, 0, read);
+        }
+        os.flush();
+        os.close();
+
+        return new PluginResult(PluginResult.Status.OK );
     }
 
     /**
@@ -160,5 +219,5 @@ public class XAPKReader extends CordovaPlugin {
 
         return result;
     }
-
+    
 }
